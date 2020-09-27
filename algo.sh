@@ -22,10 +22,10 @@ touch $ficTestC
 echo "#include <stdio.h>" > $ficH
 
 # Fichier .c
-echo "#include <"$1.h">" > $ficC
+echo "#include \"$1.h">\"" > $ficC
 
 # Fichier test .c
-echo "#include <"$1.h">" > $ficTestC
+echo "#include \"$1.h\"" > $ficTestC
 echo " " >> $ficTestC
 echo "int main(int argc, char *argv[]) { " >> $ficTestC
 echo " " >> $ficTestC
