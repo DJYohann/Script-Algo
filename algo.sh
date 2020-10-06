@@ -20,6 +20,7 @@ touch $ficTestC
 
 # Fichier .h
 echo "#include <stdio.h>" > $ficH
+echo "#include <stdlib.h>" >> $ficH
 
 # Fichier .c
 echo "#include \"$1.h\"" > $ficC
