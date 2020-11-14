@@ -1,36 +1,83 @@
-#!/bin/zsh 
+#!/bin/zsh
 
-nom1="$(echo $1 | cut -c 1 | tr "[:lower:]" "[:upper:]")" 
-nom2="$(echo $1 | cut -c 2-)"
+# Documentation du script
+doc() {
+cat << EOF
+Description : Script de création de fichiers C
 
-nom="test$nom1$nom2"
+Options : 
+  -help 	affiche l'aide
+  -addLibrary 	ajoute les librairies dans le programme C
 
-if [ $# -ne 1 ] ; then
-	echo "Erreur - paramètre manquant"
-	exit 1
-fi 
+Exemples : 
+  algo -help 
+  algo nomFic [-addLib librairies] 
+EOF
+}
 
-ficC="$1.c"
-ficH="$1.h"
-ficTestC="$nom.c"
+# Utilisation du script
+usage() {
+	doc ; exit 0
+}
 
-touch $ficC
-touch $ficH 
-touch $ficTestC
+# Fonction d'erreur
+erreur() {
+	echo "Erreur $1" >&2
+}
+
+# Gestion arguments
+if [ $# -eq 0 ] ; then
+	usage
+fi
+
+creationFichiers() {
+	nom1="$(echo $1 | cut -c 1 | tr "[:lower:]" "[:upper:]")"
+	nom2="$(echo $1 | cut -c 2-)"
+	nom="test$nom1$nom2"
+
+	ficC="$1.c"
+	ficH="$1.h"
+	ficTestC="$nom.c"
+
+	touch $ficC $ficH $ficTestC
 
 # Fichier .h
-echo "#include <stdio.h>" > $ficH
-echo "#include <stdlib.h>" >> $ficH
+cat << EOF > $ficH
+#include <stdio.h>
+#include <stdlib.h>
+EOF
 
 # Fichier .c
-echo "#include \"$1.h\"" > $ficC
+cat << EOF > $ficC
+#include "$1.h"
+EOF
 
 # Fichier test .c
-echo "#include \"$1.h\"" > $ficTestC
-echo " " >> $ficTestC
-echo "int main(int argc, char *argv[]) { " >> $ficTestC
-echo " " >> $ficTestC
-echo "	return 0;" >> $ficTestC
-echo "}" >> $ficTestC
+cat << EOF > $ficTestC
+#include "$1.h"
+
+int main(int argc, char *argv[]) {
+
+	return 0;
+}
+EOF
+}
+
+ajouterLibrairies() {
+	while [ $# -ne 0 ] ; do 
+		echo "#include <$1.h>" >> $ficH
+		shift
+	done
+}
+
+if [ $1 = "-help" ] ; then
+	usage
+fi
+
+creationFichiers $1
+
+if [ $2 = "-addLib" ] ; then
+	shift ; ajouterLibrairies $*
+fi
 
 exit 0
