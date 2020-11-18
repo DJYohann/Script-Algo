@@ -70,14 +70,14 @@ ajouterLibrairies() {
 	done
 }
 
-if [ $1 = "-help" ] ; then
+if [ "$1" = "-help" ] ; then
 	usage
 fi
 
-creationFichiers $1
+creationFichiers $1 ; shift
 
-if [ $2 = "-addLib" ] ; then
-	shift ; ajouterLibrairies $*
+if [ "$1" = "-addLib" ] ; then
+	shift ; ajouterLibrairies "$@"
 fi
 
 exit 0
